@@ -7,14 +7,14 @@ const CAKE_RESTOCKED = "CAKE_RESTOCKED";
 function orderCake() {
   return {
     type: CAKE_ORDERED,
-    quantity: 1,
+    payload: 1,
   };
 }
 
 function restockCake(qty = 1) {
   return {
     type: CAKE_RESTOCKED,
-    quantity: 1,
+    payload: qty,
   };
 }
 
@@ -43,7 +43,7 @@ const reducer = (state = initialState, action) => {
       // then simply increase the number of cakes
       return {
         ...state,
-        numOfCakes: state.numOfCakes + action.quantity, //action.quantity allows us to add more than 1 cake
+        numOfCakes: state.numOfCakes + action.payload, //action.payload allows us to add more than 1 cake
       };
     default:
       return state;
@@ -60,7 +60,7 @@ const store = createStore(reducer);
 console.log("Initial State ", store.getState()); // Initial State  { numOfCakes: 10 }
 
 // 4. subscribe to the store
-const subscribe = store.subscribe(() => {
+const unsubscribe = store.subscribe(() => {
   // when the state changes, this function will be called
   console.log("Updated State ", store.getState());
 });
@@ -71,6 +71,7 @@ const subscribe = store.subscribe(() => {
 store.dispatch(orderCake());
 store.dispatch(orderCake());
 store.dispatch(orderCake());
+store.dispatch(restockCake(10));
 
 // 6. unsubscribe
 // at the end we simply unsubscribe to any changes in the store
