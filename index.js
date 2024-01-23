@@ -1,11 +1,19 @@
 const redux = require("redux");
 
 const CAKE_ORDERED = "CAKE_ORDERED";
+const CAKE_RESTOCKED = "CAKE_RESTOCKED";
 
 // 4. define action creators
 function orderCake() {
   return {
     type: CAKE_ORDERED,
+    quantity: 1,
+  };
+}
+
+function restockCake(qty = 1) {
+  return {
+    type: CAKE_RESTOCKED,
     quantity: 1,
   };
 }
@@ -29,6 +37,13 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         numOfCakes: state.numOfCakes - 1,
+      };
+    case CAKE_RESTOCKED:
+      // when the action is CAKE_RESTOCKED
+      // then simply increase the number of cakes
+      return {
+        ...state,
+        numOfCakes: state.numOfCakes + action.quantity, //action.quantity allows us to add more than 1 cake
       };
     default:
       return state;
