@@ -4,6 +4,8 @@ const bindActionCreators = redux.bindActionCreators;
 
 const CAKE_ORDERED = "CAKE_ORDERED";
 const CAKE_RESTOCKED = "CAKE_RESTOCKED";
+const ICECREAM_ORDERED = "ICECREAM_ORDERED";
+const ICECREAM_RESTOCKED = "ICECREAM_RESTOCKED";
 
 // 4. define action creators
 function orderCake() {
@@ -20,9 +22,24 @@ function restockCake(qty = 1) {
   };
 }
 
+function orderIceCream(qty = 1) {
+  return {
+    type: ICECREAM_ORDERED,
+    payload: qty,
+  };
+}
+
+function restockIceCream(qty = 1) {
+  return {
+    type: ICECREAM_RESTOCKED,
+    payload: qty,
+  };
+}
+
 // 2. declare initial state
 const initialState = {
   numOfCakes: 10,
+  numOfIceCreams: 20,
 };
 
 // 3. declare reducer
@@ -44,6 +61,16 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         numOfCakes: state.numOfCakes + action.payload, //action.payload allows us to add more than 1 cake
+      };
+    case ICECREAM_ORDERED:
+      return {
+        ...state,
+        numOfIceCreams: state.numOfIceCreams - 1,
+      };
+    case ICECREAM_RESTOCKED:
+      return {
+        ...state,
+        numOfIceCreams: state.numOfIceCreams + action.payload,
       };
     default:
       return state;
@@ -77,13 +104,18 @@ const unsubscribe = store.subscribe(() => {
 // 5. alternative way
 // the first parameter is the action creator object,
 // the second argument is what we are going to bind it
-const actions = bindActionCreators({ orderCake, restockCake }, store.dispatch);
+const actions = bindActionCreators(
+  { orderCake, restockCake, orderIceCream, restockIceCream },
+  store.dispatch,
+);
 // now to dispatch the action we can do like this
 actions.orderCake();
 actions.restockCake(10);
+actions.orderIceCream();
+actions.restockIceCream(10);
 
-  // 6. unsubscribe
-  // at the end we simply unsubscribe to any changes in the store
-  // if you try to dispatch after unsubscribe statement you wont see the log statement
-  // this is because we have unsubscribe function
-  .unsubscribe();
+// 6. unsubscribe
+// at the end we simply unsubscribe to any changes in the store
+// if you try to dispatch after unsubscribe statement you wont see the log statement
+// this is because we have unsubscribe function
+unsubscribe();
