@@ -1,4 +1,6 @@
 const redux = require("redux");
+const createStore = redux.createStore;
+const bindActionCreators = redux.bindActionCreators;
 
 const CAKE_ORDERED = "CAKE_ORDERED";
 const CAKE_RESTOCKED = "CAKE_RESTOCKED";
@@ -17,8 +19,6 @@ function restockCake(qty = 1) {
     payload: qty,
   };
 }
-
-const createStore = redux.createStore;
 
 // 2. declare initial state
 const initialState = {
@@ -68,13 +68,22 @@ const unsubscribe = store.subscribe(() => {
 // 5. dispatch action to the store
 // when we dispatch action, the reducer sees the action type is CAKE_ORDERED.
 // It will then try to match the switch cases and the reducer function
-store.dispatch(orderCake());
-store.dispatch(orderCake());
-store.dispatch(orderCake());
-store.dispatch(restockCake(10));
+// we can do this, but there is an alternative way
+// store.dispatch(orderCake());
+// store.dispatch(orderCake());
+// store.dispatch(orderCake());
+// store.dispatch(restockCake(10));
 
-// 6. unsubscribe
-// at the end we simply unsubscribe to any changes in the store
-// if you try to dispatch after unsubscribe statement you wont see the log statement
-// this is because we have unsubscribe function
-unsubscribe();
+// 5. alternative way
+// the first parameter is the action creator object,
+// the second argument is what we are going to bind it
+const actions = bindActionCreators({ orderCake, restockCake }, store.dispatch);
+// now to dispatch the action we can do like this
+actions.orderCake();
+actions.restockCake(10);
+
+  // 6. unsubscribe
+  // at the end we simply unsubscribe to any changes in the store
+  // if you try to dispatch after unsubscribe statement you wont see the log statement
+  // this is because we have unsubscribe function
+  .unsubscribe();
