@@ -1,4 +1,5 @@
 const redux = require("redux");
+const produce = require("immer").produce;
 
 initialState = {
   name: "John",
@@ -20,13 +21,17 @@ const updateStreet = (street) => {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case STREET_UPDATED:
-      return {
-        ...state,
-        address: {
-          ...state.address,
-          street: action.payload,
-        },
-      };
+      // return {
+      //   ...state,
+      //   address: {
+      //     ...state.address,
+      //     street: action.payload,
+      //   },
+      // };
+      // immer works translates the above code into the below
+      return produce(state, (draft) => {
+        draft.address.street = action.payload;
+      });
     default: {
       return state;
     }
