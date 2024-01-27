@@ -1,6 +1,7 @@
 const redux = require("redux");
 const createStore = redux.createStore;
 const bindActionCreators = redux.bindActionCreators;
+const combineReducers = redux.combineReducers;
 
 const CAKE_ORDERED = "CAKE_ORDERED";
 const CAKE_RESTOCKED = "CAKE_RESTOCKED";
@@ -37,13 +38,17 @@ function restockIceCream(qty = 1) {
 }
 
 // 2. declare initial state
-const initialState = {
+const initialStateCake = {
   numOfCakes: 10,
+};
+
+const initialStateIceCream = {
   numOfIceCreams: 20,
 };
 
 // 3. declare reducer
-const reducer = (state = initialState, action) => {
+// 3. declare reducer
+const cakeReducer = (state = initialStateCake, action) => {
   // reducer see the action from the store
   // and simply return a new state
   // based on the action
@@ -62,6 +67,16 @@ const reducer = (state = initialState, action) => {
         ...state,
         numOfCakes: state.numOfCakes + action.payload, //action.payload allows us to add more than 1 cake
       };
+    default:
+      return state;
+  }
+};
+
+const iceCreamReducer = (state = initialStateIceCream, action) => {
+  // reducer see the action from the store
+  // and simply return a new state
+  // based on the action
+  switch (action.type) {
     case ICECREAM_ORDERED:
       return {
         ...state,
@@ -83,6 +98,12 @@ const reducer = (state = initialState, action) => {
 // library accepts a parameter the reducer
 // function which controls how the state transitions happen
 // and this in turn contains the initial state of the application
+
+const reducer = combineReducers({
+  cake: cakeReducer,
+  iceCream: iceCreamReducer,
+});
+
 const store = createStore(reducer);
 console.log("Initial State ", store.getState()); // Initial State  { numOfCakes: 10 }
 
